@@ -1,0 +1,9 @@
+.env
+
+./admin/.env
+./admin/dist
+./admin/node_modules
+
+./main/.env
+./main/dist
+./main/node_modules

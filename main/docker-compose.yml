@@ -1,0 +1,25 @@
+
+version: "3.8"
+services:
+    api:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on: 
+            - mongo
+        environment: 
+            MONGODB_URL: $MONGODB_URL
+            NODE_ENV: $NODE_ENV
+            RMQ_URL: $RMQ_URL
+            ADMIN_ENDPOINT: $ADMIN_ENDPOINT
+            PORT: $PORT
+        ports:
+            - "8001:$PORT"
+
+    mongo:
+        image: mongo:4.4
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            - MONGO_INITDB_DATABASE=$DATABASE_NAME

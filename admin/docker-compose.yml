@@ -1,0 +1,26 @@
+
+version: "3.8"
+services:
+    api:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        depends_on: 
+            - postgres
+        environment: 
+            DATABASE_URL: $DATABASE_URL
+            NODE_ENV: $NODE_ENV
+            JWT_SECRET: $JWT_SECRET
+            RMQ_URL: $RMQ_URL
+            PORT: $PORT
+        ports:
+            - "8000:$PORT"
+
+    postgres:
+        image: postgres:10.4
+        ports:
+            - "5432:5432"
+        environment: 
+            POSTGRES_USER: $DB_USERNAME
+            POSTGRES_PASSWORD: $DB_PASSWORD
+            POSTGRES_DB: $DB_NAME

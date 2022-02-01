@@ -1,0 +1,49 @@
+
+version: "3.8"
+services:
+    main-api:
+        build:
+            dockerfile: Dockerfile
+            context: ./main
+        depends_on: 
+            - mongo
+        environment: 
+            MONGODB_URL: $MONGO_DB_URL
+            NODE_ENV: $NODE_ENV
+            RMQ_URL: $RMQ_URL
+            ADMIN_ENDPOINT: $ADMIN_ENDPOINT
+            PORT: $MAIN_PORT
+        ports:
+            - "8001:$MAIN_PORT"
+
+    mongo:
+        image: mongo:4.4
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            - MONGO_INITDB_DATABASE=$DATABASE_NAME
+    
+    admin-api:
+        build:
+            dockerfile: Dockerfile
+            context: ./admin
+        depends_on: 
+            - postgres
+        environment: 
+            DATABASE_URL: $PG_DB_URL
+            NODE_ENV: $NODE_ENV
+            JWT_SECRET: $JWT_SECRET
+            RMQ_URL: $RMQ_URL
+            PORT: $ADMIN_PORT
+        ports:
+            - "8000:$ADMIN_PORT"
+
+    postgres:
+        image: postgres:10.4
+        ports:
+            - "5432:5432"
+        environment: 
+            POSTGRES_USER: $PG_DB_USERNAME
+            POSTGRES_PASSWORD: $PG_DB_PASSWORD
+            POSTGRES_DB: $PG_DB_NAME
