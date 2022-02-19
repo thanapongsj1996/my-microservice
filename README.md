@@ -8,7 +8,7 @@
 - make a request follow the postman collection file
 
 #### Architecture
-![](system.png)
+![](high-level-architecture.png)
 
 #### RabbitMQ
 ![](graph.png)
