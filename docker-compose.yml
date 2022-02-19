@@ -2,19 +2,22 @@
 version: "3.8"
 services:
     main-api:
+        container_name: main-api
         build:
             dockerfile: Dockerfile
             context: ./main
         depends_on: 
             - mongo
         environment: 
-            MONGODB_URL: $MONGO_DB_URL
+            MONGODB_URL: mongodb://mongo:27017/${MONGO_DB_NAME}
             NODE_ENV: $NODE_ENV
             RMQ_URL: $RMQ_URL
-            ADMIN_ENDPOINT: $ADMIN_ENDPOINT
+            ADMIN_ENDPOINT: http://admin-api:${ADMIN_PORT}/api/v1
             PORT: $MAIN_PORT
         ports:
             - "8001:$MAIN_PORT"
+        networks:
+            - global
 
     mongo:
         image: mongo:4.4
@@ -23,8 +26,11 @@ services:
             - 27017:27017
         environment:
             - MONGO_INITDB_DATABASE=$DATABASE_NAME
+        networks:
+            - global
     
     admin-api:
+        container_name: admin-api
         build:
             dockerfile: Dockerfile
             context: ./admin
@@ -38,6 +44,8 @@ services:
             PORT: $ADMIN_PORT
         ports:
             - "8000:$ADMIN_PORT"
+        networks:
+            - global
 
     postgres:
         image: postgres:10.4
@@ -47,3 +55,8 @@ services:
             POSTGRES_USER: $PG_DB_USERNAME
             POSTGRES_PASSWORD: $PG_DB_PASSWORD
             POSTGRES_DB: $PG_DB_NAME
+        networks:
+            - global
+networks:
+  global:
+    name: global
